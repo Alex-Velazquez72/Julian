@@ -102,28 +102,51 @@
 
     <div class="result">
         <?php
-            if(isset($_GET['nombre']) && isset($_GET['passw'])){
-                echo "<h3>Validada</h3>";
-                if($_GET['nombre'] == "Jose" && $_GET['passw'] == "Changos"){
-                    // Redirección según perfil
-                    $profile = $_GET['profile'] ?? '';
-                    switch($profile) {
-                        case 'admin':
-                            header("Location: admin.php");
-                            break;
-                        case 'user':
-                            header("Location: user.php");
-                            break;
-                        case 'guess':
-                            header("Location: guess.php");
-                            break;
-                        default:
-                            echo "Por favor seleccione un perfil válido";
-                            break;
+            // Definimos los usuarios válidos para cada perfil
+            $usuariosValidos = [
+                'admin' => [
+                    'username' => 'Jose',
+                    'password' => 'Changos'
+                ],
+                'user' => [
+                    'username' => 'Pedro',
+                    'password' => '12345'
+                ],
+                'guess' => [
+                    'username' => 'Susy',
+                    'password' => '123'
+                ]
+            ];
+
+            if(isset($_GET['nombre']) && isset($_GET['passw']) && isset($_GET['profile'])){
+                $nombre = $_GET['nombre'];
+                $passw = $_GET['passw'];
+                $profile = $_GET['profile'];
+                
+                // Verificamos si el perfil seleccionado existe
+                if(array_key_exists($profile, $usuariosValidos)) {
+                    // Verificamos credenciales
+                    if($nombre === $usuariosValidos[$profile]['username'] && 
+                       $passw === $usuariosValidos[$profile]['password']) {
+                        
+                        // Redirección según perfil
+                        switch($profile) {
+                            case 'admin':
+                                header("Location: admin.php");
+                                break;
+                            case 'user':
+                                header("Location: user.php");
+                                break;
+                            case 'guess':
+                                header("Location: guess.php");
+                                break;
+                        }
+                        exit();
+                    } else {
+                        echo "Usuario o Contraseña Incorrecto para el perfil seleccionado";
                     }
-                    exit();
                 } else {
-                    echo "Usuario o Contraseña Incorrecto";
+                    echo "Por favor seleccione un perfil válido";
                 }
             }
         ?>
